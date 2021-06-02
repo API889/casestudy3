@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:munit="http://www.mulesoft.org/schema/mule/munit" xmlns:munit-tools="http://www.mulesoft.org/schema/mule/munit-tools"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xsi:schemaLocation="
+		http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+		http://www.mulesoft.org/schema/mule/munit http://www.mulesoft.org/schema/mule/munit/current/mule-munit.xsd
+		http://www.mulesoft.org/schema/mule/munit-tools  http://www.mulesoft.org/schema/mule/munit-tools/current/mule-munit-tools.xsd">
+	<munit:config name="casestudy3-suite.xml" />
+	<munit:test name="fetchDB_EmployeeRecordById-test" doc:id="f03f4b2d-7599-4d0d-99c2-301028b54ba4" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock queryEmployeeTable" doc:id="9ca8f5ed-e18d-44b6-89d2-ae7e79e186e7" processor="db:select">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="2c0c89d8-07cd-4dbf-8298-d5de418e61f3" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/java --- readUrl('classpath://fetchDBEmployeeRecordByIdtest\mock_payload.dwl')]" mediaType="application/java" encoding="UTF-8" />
+					<munit-tools:variables >
+						<munit-tools:variable key="outboundHeaders" value="#[readUrl('classpath://fetchDBEmployeeRecordByIdtest\mock_variable_.dwl')]" />
+						<munit-tools:variable key="id" value="#[output application/java --- readUrl('classpath://fetchDBEmployeeRecordByIdtest\mock_variable_1.dwl')]" mediaType="application/java" encoding="UTF-8" />
+					</munit-tools:variables>
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit:set-event doc:name="Set Input" doc:id="f8309ddf-5183-4fa2-89a5-581abb47aad9" >
+				<munit:payload value="#[readUrl('classpath://fetchDBEmployeeRecordByIdtest\set-event_payload.dwl')]" encoding="UTF-8" />
+				<munit:attributes value="#[readUrl('classpath://fetchDBEmployeeRecordByIdtest\set-event_attributes.dwl')]" />
+				<munit:variables >
+					<munit:variable key="outboundHeaders" value="#[readUrl('classpath://fetchDBEmployeeRecordByIdtest\set-event_variable_.dwl')]" />
+				</munit:variables>
+			</munit:set-event>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to fetch-dbrecord-by-empid" doc:id="db920374-4b05-4f87-aa1b-97693c0d878c" name="fetch-dbrecord-by-empid"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert doc:name="Assert payload" doc:id="86c7cdf7-284d-43f7-805b-220de0908c35" message="The payload does not match">
+				<munit-tools:that ><![CDATA[#[%dw 2.0
+import fetchDBEmployeeRecordByIdtest::assert_expression_payload
+---
+assert_expression_payload::main({payload: payload, attributes: attributes, vars: vars})]]]></munit-tools:that>
+			</munit-tools:assert>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="inserting-into-db-test" doc:id="0a22969c-cbb4-4be2-b893-f848594fbefd" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock Insert_employee_table" doc:id="280e06a2-01ed-4f33-9364-8f3e8359dec5" processor="db:insert">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="83024c74-21b8-441d-beca-d0cd7810d226" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/java --- readUrl('classpath://insertingintodbtest\mock_payload.dwl')]" mediaType="application/java" encoding="UTF-8" />
+					<munit-tools:variables >
+						<munit-tools:variable key="outboundHeaders" value="#[readUrl('classpath://insertingintodbtest\mock_variable_.dwl')]" />
+						<munit-tools:variable key="rootMessage" value="#[readUrl('classpath://insertingintodbtest\mock_variable_1.dwl')]" />
+						<munit-tools:variable key="counter" value="#[readUrl('classpath://insertingintodbtest\mock_variable_2.dwl')]" />
+					</munit-tools:variables>
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit:set-event doc:name="Set Input" doc:id="83e4be7d-6854-43d5-a5c3-ae297d7c1beb" >
+				<munit:payload value="#[output application/json --- readUrl('classpath://insertingintodbtest\set-event_payload.dwl')]" encoding="UTF-8" mediaType="application/json" />
+				<munit:attributes value="#[readUrl('classpath://insertingintodbtest\set-event_attributes.dwl')]" />
+				<munit:variables >
+					<munit:variable key="outboundHeaders" value="#[readUrl('classpath://insertingintodbtest\set-event_variable_.dwl')]" />
+				</munit:variables>
+			</munit:set-event>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to inserting-into-db" doc:id="f9b66dfa-ac18-4889-8a9e-7ba0362c85f4" name="inserting-into-db"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert doc:name="Assert payload" doc:id="22ec49a1-7dc0-4e5d-8075-1ecdd9c96790" message="The payload does not match">
+				<munit-tools:that ><![CDATA[#[%dw 2.0
+import insertingintodbtest::assert_expression_payload
+---
+assert_expression_payload::main({payload: payload, attributes: attributes, vars: vars})]]]></munit-tools:that>
+			</munit-tools:assert>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="process-records-db2sf-flow-test" doc:id="5663e2ea-0bea-4b46-a858-34f7621a8641" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock Validate schema" doc:id="3f5f8412-6500-48bb-b262-763a4203433c" processor="json:validate-schema">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="dca711f2-1481-4633-9b44-db5ad7bac800" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/json --- readUrl('classpath://processrecordsdb2sfflowtest\mock_payload.dwl')]" mediaType="application/json" encoding="UTF-8" />
+					<munit-tools:attributes value="#[readUrl('classpath://processrecordsdb2sfflowtest\mock_attributes.dwl')]" />
+					<munit-tools:variables >
+						<munit-tools:variable key="outboundHeaders" value="#[readUrl('classpath://processrecordsdb2sfflowtest\mock_variable_.dwl')]" />
+					</munit-tools:variables>
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit:set-event doc:name="Set Input" doc:id="7f3797d1-2b40-4bc4-a335-337e2c202c3e" >
+				<munit:payload value="#[output application/json --- readUrl('classpath://processrecordsdb2sfflowtest\set-event_payload.dwl')]" encoding="UTF-8" mediaType="application/json" />
+				<munit:attributes value="#[readUrl('classpath://processrecordsdb2sfflowtest\set-event_attributes.dwl')]" />
+				<munit:variables >
+					<munit:variable key="outboundHeaders" value="#[readUrl('classpath://processrecordsdb2sfflowtest\set-event_variable_.dwl')]" />
+				</munit:variables>
+			</munit:set-event>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to process-records-db2sf-flow" doc:id="9a1657d7-f406-4d52-b670-a6434aad7275" name="update-records-db2sf-flow"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert doc:name="Assert payload" doc:id="9b5c07b7-911e-48e6-90cd-20371762fce6" message="The payload does not match">
+				<munit-tools:that ><![CDATA[#[%dw 2.0
+import processrecordsdb2sfflowtest::assert_expression_payload
+---
+assert_expression_payload::main({payload: payload, attributes: attributes, vars: vars})]]]></munit-tools:that>
+			</munit-tools:assert>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="write-csv-flow-test" doc:id="675c2403-23e3-47ca-bca7-4cb27c70db7a" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock query-employee" doc:id="a1a9bf20-9fac-49b2-b05d-43639b661405" processor="db:select">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="51615d43-fa64-4656-8ab6-e257a47486ca" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/java --- readUrl('classpath://writecsvflowtest\mock_payload.dwl')]" mediaType="application/java" encoding="UTF-8" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Mock write-csv-file" doc:id="3da9a8ac-73dd-45cd-aa67-3f47a3057a5e" processor="file:write">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="377bd84d-3c73-475a-bfaa-f4bda86c24e9" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/java --- readUrl('classpath://writecsvflowtest\mock_payload1.dwl')]" mediaType="application/java" encoding="UTF-8" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit:set-event doc:name="Set Input" doc:id="02273d15-866d-4b45-a5fe-b7e9722db376" >
+				<munit:payload value="#[readUrl('classpath://writecsvflowtest\set-event_payload.dwl')]" />
+			</munit:set-event>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to write-csv-flow" doc:id="5b11ebf3-53d0-4a54-a4e6-5ae68fd88f0e" name="write-csv-flow"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert doc:name="Assert payload" doc:id="c0d1e8ea-02b6-4e80-9490-0ab8833edc34" message="The payload does not match">
+				<munit-tools:that ><![CDATA[#[%dw 2.0
+import writecsvflowtest::assert_expression_payload
+---
+assert_expression_payload::main({payload: payload, attributes: attributes, vars: vars})]]]></munit-tools:that>
+			</munit-tools:assert>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="schedule_sync_DB_SF-test" doc:id="7890a335-32bc-4c0e-a96b-e47c3555382e" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock queryEmployeeRecords" doc:id="423d1279-2895-4b33-b3b0-c246e8f4a096" processor="db:select">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="6ed5e91a-4495-47b9-b7ee-584b5a67bc73" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/java --- readUrl('classpath://schedulesyncDBSFtest\mock_payload.dwl')]" mediaType="application/java" encoding="UTF-8" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit:set-event doc:name="Set Input" doc:id="ca83dcd0-5041-4cb6-a5cd-951a99afeef9" >
+				<munit:payload value="#[readUrl('classpath://schedulesyncDBSFtest\set-event_payload.dwl')]" />
+			</munit:set-event>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to schedule_sync_DB_SF" doc:id="419ebb1a-e1d8-4a45-9f8d-a9da2cd5f69a" name="schedule_sync_DB_SF"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert doc:name="Assert payload" doc:id="e88fa0fe-4f09-4354-ac00-4b7ffc4934e7" message="The payload does not match">
+				<munit-tools:that ><![CDATA[#[%dw 2.0
+import schedulesyncDBSFtest::assert_expression_payload
+---
+assert_expression_payload::main({payload: payload, attributes: attributes, vars: vars})]]]></munit-tools:that>
+			</munit-tools:assert>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="delete-dbrecord_sync_sf-test" doc:id="1625b742-978e-4bb7-b5f2-369547f35778" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock DeleteEmployeeData" doc:id="244d0054-9282-4742-bca6-843393706d02" processor="db:delete">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="e0fb7c9d-67ef-402c-ab70-45f236b74813" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/java --- readUrl('classpath://deletedbrecordsyncsftest\mock_payload1.dwl')]" mediaType="application/java" encoding="UTF-8" />
+					<munit-tools:variables >
+						<munit-tools:variable key="outboundHeaders" value="#[readUrl('classpath://deletedbrecordsyncsftest\mock_variable_2.dwl')]" />
+						<munit-tools:variable key="id" value="#[output application/java --- readUrl('classpath://deletedbrecordsyncsftest\mock_variable_3.dwl')]" mediaType="application/java" encoding="UTF-8" />
+					</munit-tools:variables>
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Mock employeeid" doc:id="f3c65da0-053f-4713-9302-8a2d7e747531" processor="set-variable">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="45f70b7a-7ac6-49a6-95ae-d311b7d976f7" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:variables >
+						<munit-tools:variable key="outboundHeaders" value="#[readUrl('classpath://deletedbrecordsyncsftest\mock_variable_4.dwl')]" />
+						<munit-tools:variable key="id" value="#[output application/java --- readUrl('classpath://deletedbrecordsyncsftest\mock_variable_5.dwl')]" mediaType="application/java" encoding="UTF-8" />
+					</munit-tools:variables>
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit:set-event doc:name="Set Input" doc:id="804cfb58-b2df-49a9-9020-3cd0a85a24b3" >
+				<munit:payload value="#[readUrl('classpath://deletedbrecordsyncsftest\set-event_payload1.dwl')]" encoding="UTF-8" />
+				<munit:attributes value="#[readUrl('classpath://deletedbrecordsyncsftest\set-event_attributes1.dwl')]" />
+				<munit:variables >
+					<munit:variable key="outboundHeaders" value="#[readUrl('classpath://deletedbrecordsyncsftest\set-event_variable_1.dwl')]" />
+				</munit:variables>
+			</munit:set-event>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to delete-dbrecord_sync_sf" doc:id="07db669e-0648-4b52-9e34-61d654988a7e" name="delete-dbrecord_sync_sf"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert doc:name="Assert payload" doc:id="29c56bed-6f68-480c-8a1d-5b6d0228eb72" message="The payload does not match">
+				<munit-tools:that ><![CDATA[#[%dw 2.0
+import deletedbrecordsyncsftest::assert_expression_payload1
+---
+assert_expression_payload1::main({payload: payload, attributes: attributes, vars: vars})]]]></munit-tools:that>
+			</munit-tools:assert>
+		</munit:validation>
+	</munit:test>
+
+
+</mule>
